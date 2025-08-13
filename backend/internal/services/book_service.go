@@ -8,6 +8,7 @@ import (
 // BookService defines the interface for book business logic.
 type BookService interface {
 	GetBooks() ([]models.Book, error)
+	GetBooksWithPagination(limit, offset int) ([]models.Book, int64, error)
 	GetBook(id uint) (models.Book, error)
 	CreateBook(book models.Book) (models.Book, error)
 	UpdateBook(book models.Book) (models.Book, error)
@@ -25,6 +26,10 @@ func NewBookService(r repositories.BookRepository) BookService {
 
 func (s *bookService) GetBooks() ([]models.Book, error) {
 	return s.repo.FindAll()
+}
+
+func (s *bookService) GetBooksWithPagination(limit, offset int) ([]models.Book, int64, error) {
+	return s.repo.FindAllWithPagination(limit, offset)
 }
 
 func (s *bookService) GetBook(id uint) (models.Book, error) {

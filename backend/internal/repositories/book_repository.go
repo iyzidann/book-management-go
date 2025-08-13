@@ -8,6 +8,7 @@ import (
 // BookRepository defines the interface for book data operations.
 type BookRepository interface {
 	FindAll() ([]models.Book, error)
+	FindAllWithPagination(limit, offset int) ([]models.Book, int64, error)
 	FindByID(id uint) (models.Book, error)
 	Create(b models.Book) (models.Book, error)
 	Update(b models.Book) (models.Book, error)
@@ -27,6 +28,25 @@ func (r *mysqlRepo) FindAll() ([]models.Book, error) {
 	var books []models.Book
 	err := r.db.Find(&books).Error
 	return books, err
+}
+
+func (r *mysqlRepo) FindAllWithPagination(limit, offset int) ([]models.Book, int64, error) {
+	var books []models.Book
+	var total int64
+
+	// Count total records
+	err := r.db.Model(&models.Book{}).Count(&total).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	// Get paginated results
+	err = r.db.Offset(offset).Limit(limit).Find(&books).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return books, total, nil
 }
 
 func (r *mysqlRepo) FindByID(id uint) (models.Book, error) {

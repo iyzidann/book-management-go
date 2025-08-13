@@ -2,8 +2,13 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/books';
 
-const getBooks = () => {
-    return axios.get(API_URL);
+const getBooks = (page = 1, limit = 10) => {
+    return axios.get(API_URL, {
+        params: {
+            page,
+            limit
+        }
+    });
 };
 
 const getBook = (id) => {
@@ -28,7 +33,8 @@ const BookService = {
     getBook,
     createBook,
     updateBook,
-    deleteBook
+    deleteBook,
+    getBooksWithPagination: getBooks // Alias for backward compatibility
 };
 
 export default BookService;

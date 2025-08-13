@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import BookService from '../../../api/BookService';
 
 export const useBooks = () => {
@@ -8,19 +8,41 @@ export const useBooks = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [bookToDelete, setBookToDelete] = useState(null);
     const [notification, setNotification] = useState({ show: false, message: '', variant: 'success' });
+    
+    // Pagination state
+    const [pagination, setPagination] = useState({
+        page: 1,
+        limit: 10,
+        total: 0,
+        totalPages: 1
+    });
+    const [loading, setLoading] = useState(false);
+
+    const loadBooks = useCallback((page = 1, limit = 10) => {
+        setLoading(true);
+        BookService.getBooks(page, limit)
+            .then(response => {
+                const { data, total, page: currentPage, limit: currentLimit, total_pages } = response.data;
+                setBooks(data || []);
+                setPagination({
+                    page: currentPage,
+                    limit: currentLimit,
+                    total,
+                    totalPages: total_pages
+                });
+            })
+            .catch(error => {
+                showNotification(`Error fetching books: ${error.message}`, 'danger');
+                setBooks([]);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
 
     useEffect(() => {
         loadBooks();
-    }, []);
-
-    const loadBooks = () => {
-        BookService.getBooks().then(response => {
-            setBooks(response.data || []);
-        }).catch(error => {
-            showNotification(`Error fetching books: ${error.message}`, 'danger');
-            setBooks([]);
-        });
-    };
+    }, [loadBooks]);
 
     const showNotification = (message, variant = 'success') => {
         setNotification({ show: true, message, variant });
@@ -45,7 +67,7 @@ export const useBooks = () => {
             : BookService.createBook({ title: book.title, author: book.author });
 
         savePromise.then(() => {
-            loadBooks();
+            loadBooks(pagination.page, pagination.limit);
             showNotification(`Book ${book.id ? 'updated' : 'created'} successfully!`, 'success');
         }).catch(error => {
             showNotification(`Error saving book: ${error.message}`, 'danger');
@@ -57,6 +79,14 @@ export const useBooks = () => {
     const handleDelete = (id) => {
         setBookToDelete(id);
         setShowDeleteConfirm(true);
+    };
+    
+    const handlePageChange = (newPage) => {
+        loadBooks(newPage, pagination.limit);
+    };
+    
+    const handleLimitChange = (newLimit) => {
+        loadBooks(1, newLimit);
     };
 
     const confirmDelete = () => {
@@ -81,11 +111,15 @@ export const useBooks = () => {
         currentBook,
         showDeleteConfirm,
         notification,
-        setNotification,
+        loading,
+        pagination,
+        loadBooks,
         handleOpen,
         handleClose,
         handleSave,
         handleDelete,
+        handlePageChange,
+        handleLimitChange,
         confirmDelete,
         closeDeleteConfirm
     };
