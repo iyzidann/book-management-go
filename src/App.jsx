@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-import BooksPage from './pages/BooksPage.jsx';
-import BookDetailPage from './pages/BookDetailPage.jsx';
+import BooksPage from './pages/BooksPage';
+import BookDetailPage from './pages/BookDetailPage';
 import './App.css';
 
 function App() {
@@ -14,7 +14,6 @@ function App() {
             <Route path="/" element={<Navigate to="/books" replace />} />
             <Route path="/books" element={<BooksPage />} />
             <Route path="/books/:id" element={<BookDetailPage />} />
-            {/* Add a catch-all route for 404 pages */}
             <Route path="*" element={<Navigate to="/books" replace />} />
           </Routes>
         </Container>
