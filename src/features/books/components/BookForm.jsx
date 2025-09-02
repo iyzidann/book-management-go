@@ -105,71 +105,77 @@ const BookForm = ({ open, handleClose, handleSave, book }) => {
                 {book && book.id ? 'Edit Book' : 'Add New Book'}
             </DialogTitle>
 
-            <DialogContent sx={{ pb: 0 }}>
-                {error && (
-                    <Alert variant="outlined" severity="error" sx={{ mb: 3 }}>
-                        {error}
-                    </Alert>
-                )}
+<DialogContent sx={{ pt: 3, pb: 2 }}>
+  {error && (
+    <Alert variant="outlined" severity="error" sx={{ mb: 3 }}>
+      {error}
+    </Alert>
+  )}
 
-                <TextField
-                    label="Book Title"
-                    placeholder="Enter the book title..."
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    disabled={loading}
-                    autoFocus
-                    fullWidth
-                    sx={{ mb: 3 }}
-                    helperText="Enter the full title of the book"
-                    required
-                />
+  <TextField
+    label="Book Title"
+    placeholder="Enter the book title..."
+    value={title}
+    onChange={(e) => setTitle(e.target.value)}
+    onKeyPress={handleKeyPress}
+    disabled={loading}
+    autoFocus
+    fullWidth
+    margin="normal"   // 🔹 kasih margin bawaan MUI
+    helperText="Enter the full title of the book"
+    required
+  />
 
-                <TextField
-                    label="Author Name"
-                    placeholder="Enter the author's name..."
-                    value={author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    disabled={loading}
-                    fullWidth
-                    sx={{ mb: 3 }}
-                    helperText="Enter the author's full name"
-                    required
-                />
+  <TextField
+    label="Author Name"
+    placeholder="Enter the author's name..."
+    value={author}
+    onChange={(e) => setAuthor(e.target.value)}
+    onKeyPress={handleKeyPress}
+    disabled={loading}
+    fullWidth
+    margin="normal"   // 🔹 ini juga
+    helperText="Enter the author's full name"
+    required
+  />
 
-                {/* Preview */}
-                {(title || author) && (
-                    <Paper sx={{ p: 2, bgcolor: 'grey.100' }}>
-                        <Typography variant="caption" color="text.secondary" gutterBottom>
-                            Preview:
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Avatar
-                                sx={{
-                                    width: 50,
-                                    height: 65,
-                                    bgcolor: 'primary.main',
-                                    fontSize: '1.5rem',
-                                    fontWeight: 'bold',
-                                    '& .MuiAvatar-fallback': { color: 'white' }
-                                }}
-                            >
-                                {title.charAt(0).toUpperCase() || '?'}
-                            </Avatar>
-                            <Box>
-                                <Typography variant="body1" fontWeight="bold">
-                                    {title || 'Book Title'}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {author ? `by ${author}` : 'by Author Name'}
-                                </Typography>
-                            </Box>
-                        </Box>
-                    </Paper>
-                )}
-            </DialogContent>
+  {/* Preview */}
+  {(title || author) && (
+    <Paper
+      variant="outlined"
+      sx={{
+        p: 2,
+        borderRadius: 2,
+        bgcolor: 'grey.50',
+        mt: 2,
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Avatar
+          sx={{
+            width: 56,
+            height: 72,
+            bgcolor: 'grey.500', // abu-abu
+            fontSize: '1.4rem',
+            fontWeight: 'bold',
+            color: 'white',
+            borderRadius: 2,
+          }}
+        >
+          {title.charAt(0).toUpperCase() || '?'}
+        </Avatar>
+        <Box>
+          <Typography variant="subtitle1" fontWeight="bold">
+            {title || 'Untitled Book'}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {author ? `by ${author}` : 'by Unknown Author'}
+          </Typography>
+        </Box>
+      </Box>
+    </Paper>
+  )}
+</DialogContent>
 
             <DialogActions sx={{ p: 3, pt: 2 }}>
                 <Button

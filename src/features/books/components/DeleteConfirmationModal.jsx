@@ -47,22 +47,6 @@ const DeleteConfirmationModal = ({ show, handleClose, handleConfirm, book }) => 
             </DialogTitle>
 
             <DialogContent sx={{ pt: 3 }}>
-                <Box sx={{ textAlign: 'center', mb: 3 }}>
-                    <Avatar
-                        sx={{
-                            width: 60,
-                            height: 75,
-                            bgcolor: 'error.main',
-                            mx: 'auto',
-                            mb: 2,
-                            fontSize: '1.8rem',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        {book?.title?.charAt(0)?.toUpperCase() || '?'}
-                    </Avatar>
-                </Box>
-
                 <Box sx={{ textAlign: 'center' }}>
                     <Typography variant="h6" gutterBottom>
                         Are you sure you want to delete this book?
