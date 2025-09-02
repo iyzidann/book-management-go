@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  Box,
+  Paper,
+  Avatar,
+  CircularProgress,
+} from '@mui/material';
 
 const BookForm = ({ open, handleClose, handleSave, book }) => {
     const [title, setTitle] = useState('');
@@ -81,114 +94,101 @@ const BookForm = ({ open, handleClose, handleSave, book }) => {
     };
 
     return (
-        <Modal 
-            show={open} 
-            onHide={onClose}
-            backdrop={loading ? 'static' : true}
-            keyboard={!loading}
-            centered
+        <Dialog
+            open={open}
+            onClose={onClose}
+            disableEscapeKeyDown={loading}
+            fullWidth
+            maxWidth="sm"
         >
-            <Modal.Header closeButton={!loading}>
-                <Modal.Title className="d-flex align-items-center gap-2">
-                    <span>{book && book.id ? 'Edit Book' : 'Add New Book'}</span>
-                </Modal.Title>
-            </Modal.Header>
-            
-            <Modal.Body className="px-4 py-4">
+            <DialogTitle>
+                {book && book.id ? 'Edit Book' : 'Add New Book'}
+            </DialogTitle>
+
+            <DialogContent sx={{ pb: 0 }}>
                 {error && (
-                    <Alert variant="danger" className="mb-3">
-                        <small>{error}</small>
+                    <Alert variant="outlined" severity="error" sx={{ mb: 3 }}>
+                        {error}
                     </Alert>
                 )}
-                
-                <Form onKeyPress={handleKeyPress}>
-                    <Form.Group className="mb-4">
-                        <Form.Label className="fw-semibold">
-                            Book Title <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter the book title..."
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            disabled={loading}
-                            autoFocus
-                            className="form-control-lg"
-                            style={{ fontSize: '1rem' }}
-                        />
-                        <Form.Text className="text-muted">
-                            Enter the full title of the book
-                        </Form.Text>
-                    </Form.Group>
-                    
-                    <Form.Group className="mb-4">
-                        <Form.Label className="fw-semibold">
-                            Author Name <span className="text-danger">*</span>
-                        </Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter the author's name..."
-                            value={author}
-                            onChange={(e) => setAuthor(e.target.value)}
-                            disabled={loading}
-                            className="form-control-lg"
-                            style={{ fontSize: '1rem' }}
-                        />
-                        <Form.Text className="text-muted">
-                            Enter the author's full name
-                        </Form.Text>
-                    </Form.Group>
-                </Form>
+
+                <TextField
+                    label="Book Title"
+                    placeholder="Enter the book title..."
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    disabled={loading}
+                    autoFocus
+                    fullWidth
+                    sx={{ mb: 3 }}
+                    helperText="Enter the full title of the book"
+                    required
+                />
+
+                <TextField
+                    label="Author Name"
+                    placeholder="Enter the author's name..."
+                    value={author}
+                    onChange={(e) => setAuthor(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    disabled={loading}
+                    fullWidth
+                    sx={{ mb: 3 }}
+                    helperText="Enter the author's full name"
+                    required
+                />
 
                 {/* Preview */}
                 {(title || author) && (
-                    <div className="border rounded-3 p-3 bg-light">
-                        <small className="text-muted d-block mb-2">Preview:</small>
-                        <div className="d-flex align-items-center gap-3">
-                            <div 
-                                className="d-flex align-items-center justify-content-center text-white rounded fw-bold"
-                                style={{
-                                    width: '50px',
-                                    height: '65px',
-                                    backgroundColor: '#6366f1',
-                                    fontSize: '1.5rem'
+                    <Paper sx={{ p: 2, bgcolor: 'grey.100' }}>
+                        <Typography variant="caption" color="text.secondary" gutterBottom>
+                            Preview:
+                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <Avatar
+                                sx={{
+                                    width: 50,
+                                    height: 65,
+                                    bgcolor: 'primary.main',
+                                    fontSize: '1.5rem',
+                                    fontWeight: 'bold',
+                                    '& .MuiAvatar-fallback': { color: 'white' }
                                 }}
                             >
                                 {title.charAt(0).toUpperCase() || '?'}
-                            </div>
-                            <div>
-                                <div className="fw-semibold">{title || 'Book Title'}</div>
-                                <div className="text-muted small">
+                            </Avatar>
+                            <Box>
+                                <Typography variant="body1" fontWeight="bold">
+                                    {title || 'Book Title'}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
                                     {author ? `by ${author}` : 'by Author Name'}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                                </Typography>
+                            </Box>
+                        </Box>
+                    </Paper>
                 )}
-            </Modal.Body>
-            
-            <Modal.Footer className="border-top-0 px-4 pb-4">
-                <Button 
-                    variant="outline-secondary" 
+            </DialogContent>
+
+            <DialogActions sx={{ p: 3, pt: 2 }}>
+                <Button
+                    variant="outlined"
                     onClick={onClose}
                     disabled={loading}
-                    className="px-4"
                 >
                     Cancel
                 </Button>
-                <Button 
-                    variant="primary" 
+                <Button
+                    variant="contained"
                     onClick={onSave}
                     disabled={loading || !title.trim() || !author.trim()}
-                    className="px-4 d-flex align-items-center gap-2"
+                    startIcon={loading ? <CircularProgress size={16} /> : null}
                 >
-                    {loading && (
-                        <span className="spinner-border spinner-border-sm" role="status" />
-                    )}
                     {loading ? 'Saving...' : 'Save Book'}
                 </Button>
-            </Modal.Footer>
-        </Modal>
+            </DialogActions>
+        </Dialog>
     );
 };
 

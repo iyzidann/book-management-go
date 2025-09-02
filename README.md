@@ -9,7 +9,7 @@ The frontend is a single-page application built with:
 - **React**: A JavaScript library for building the user interface.
 - **React Router DOM**: For handling navigation and routing between pages.
 - **Axios**: A promise-based HTTP client to communicate with the backend API.
-- **React Bootstrap**: A UI framework for creating responsive and clean components.
+- **Material UI (MUI)**: A popular React components library implementing Google's Material Design for creating responsive and clean components.
 
 ### Backend
 The backend is a powerful API built with:

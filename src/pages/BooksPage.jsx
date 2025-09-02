@@ -1,5 +1,13 @@
 import React from 'react';
-import { Container, Button, Spinner, Card, Row, Col } from 'react-bootstrap';
+import {
+  Container,
+  Button,
+  CircularProgress,
+  Typography,
+  Box,
+  Paper,
+} from '@mui/material';
+import { Add } from '@mui/icons-material';
 import { useBooks } from '../features/books/hooks/useBooks';
 import BookForm from '../features/books/components/BookForm.jsx';
 import BookTable from '../features/books/components/BookTable.jsx';
@@ -8,162 +16,128 @@ import DeleteConfirmationModal from '../features/books/components/DeleteConfirma
 import Pagination from '../components/common/Pagination.jsx';
 
 const BooksPage = () => {
-    const {
-        books,
-        open,
-        currentBook,
-        showDeleteConfirm,
-        notification,
-        loading,
-        pagination,
-        handleOpen,
-        handleClose,
-        handleSave,
-        handleDelete,
-        handlePageChange,
-        handleLimitChange,
-        confirmDelete,
-        closeDeleteConfirm
-    } = useBooks();
+  const {
+    books,
+    open,
+    currentBook,
+    showDeleteConfirm,
+    notification,
+    loading,
+    pagination,
+    handleOpen,
+    handleClose,
+    handleSave,
+    handleDelete,
+    handlePageChange,
+    handleLimitChange,
+    confirmDelete,
+    closeDeleteConfirm
+  } = useBooks();
 
-    return (
-        <Container className="mt-4 mb-5">
-            <Notification notification={notification} />
-            
-            {/* Header Section */}
-            <div className="mb-4">
-                <Row className="align-items-center">
-                    <Col>
-                        <div className="d-flex align-items-center gap-3 mb-2">
-                            <div>
-                                <h1 className="mb-1" style={{ fontSize: '2rem', fontWeight: '700' }}>
-                                    Book Management
-                                </h1>
-                                <p className="text-muted mb-0">
-                                    Manage your book collection with ease
-                                </p>
-                            </div>
-                        </div>
-                    </Col>
-                    <Col xs="auto">
-                        <Button 
-                            variant="primary" 
-                            onClick={() => handleOpen()}
-                            className="d-flex align-items-center gap-2 px-3"
-                            style={{ 
-                                background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
-                                border: 'none',
-                                boxShadow: '0 2px 8px rgba(99, 102, 241, 0.25)'
-                            }}
-                        >
-                            <span>+</span>
-                            Add New Book
-                        </Button>
-                    </Col>
-                </Row>
-                
-                {/* Stats Card */}
-                {!loading && (
-                    <Card className="border-0 shadow-sm mt-4" style={{ background: 'linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%)' }}>
-                        <Card.Body className="py-3">
-                            <Row className="text-center">
-                                <Col md={4}>
-                                    <div className="d-flex align-items-center justify-content-center gap-2">
-                                        <span style={{ fontSize: '1.2rem' }}></span>
-                                        <div>
-                                            <div className="fw-bold text-primary" style={{ fontSize: '1.5rem' }}>
-                                                {pagination.total || 0}
-                                            </div>
-                                            <small className="text-muted">Total Books</small>
-                                        </div>
-                                    </div>
-                                </Col>
-                                <Col md={4}>
-                                    <div className="d-flex align-items-center justify-content-center gap-2">
-                                        <span style={{ fontSize: '1.2rem' }}></span>
-                                        <div>
-                                            <div className="fw-bold text-success" style={{ fontSize: '1.5rem' }}>
-                                                {pagination.page || 1}
-                                            </div>
-                                            <small className="text-muted">Current Page</small>
-                                        </div>
-                                    </div>
-                                </Col>
-                                <Col md={4}>
-                                    <div className="d-flex align-items-center justify-content-center gap-2">
-                                        <span style={{ fontSize: '1.2rem' }}></span>
-                                        <div>
-                                            <div className="fw-bold text-info" style={{ fontSize: '1.5rem' }}>
-                                                {pagination.totalPages || 1}
-                                            </div>
-                                            <small className="text-muted">Total Pages</small>
-                                        </div>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
-                )}
-            </div>
-            
-            {/* Content Section */}
-            {loading ? (
-                <Card className="border-0 shadow-sm">
-                    <Card.Body className="text-center py-5">
-                        <Spinner 
-                            animation="border" 
-                            role="status"
-                            style={{ 
-                                width: '3rem', 
-                                height: '3rem',
-                                color: '#6366f1'
-                            }}
-                        >
-                            <span className="visually-hidden">Loading...</span>
-                        </Spinner>
-                        <p className="mt-3 text-muted mb-0">Loading your book collection...</p>
-                    </Card.Body>
-                </Card>
-            ) : (
-                <Card className="border-0 shadow-sm">
-                    <Card.Body className="p-0">
-                        <BookTable 
-                            books={books} 
-                            handleOpen={handleOpen} 
-                            handleDelete={handleDelete}
-                            pagination={pagination} 
-                        />
-                    </Card.Body>
-                    {books && books.length > 0 && (
-                        <Card.Footer className="bg-white border-0 pt-0">
-                            <Pagination
-                                currentPage={pagination.page}
-                                totalPages={pagination.totalPages}
-                                totalItems={pagination.total}
-                                itemsPerPage={pagination.limit}
-                                onPageChange={handlePageChange}
-                                onItemsPerPageChange={handleLimitChange}
-                            />
-                        </Card.Footer>
-                    )}
-                </Card>
-            )}
-            
-            {/* Modals */}
-            <BookForm
-                open={open}
-                handleClose={handleClose}
-                handleSave={handleSave}
-                book={currentBook}
-            />
-            <DeleteConfirmationModal
-                show={showDeleteConfirm}
-                handleClose={closeDeleteConfirm}
-                handleConfirm={confirmDelete}
-                book={currentBook}
-            />
-        </Container>
-    );
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 6 }}>
+      <Notification notification={notification} />
+
+      {/* Header Section */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 3,
+        }}
+      >
+        <Box>
+          <Typography variant="h5" fontWeight="bold">
+            Book Management
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Manage your book collection with ease
+          </Typography>
+        </Box>
+        <Button
+          variant="contained"
+          onClick={() => handleOpen()}
+          startIcon={<Add />}
+          sx={{
+            bgcolor: '#000',
+            color: '#fff',
+            textTransform: 'none',
+            borderRadius: 1.5,
+            px: 2,
+            py: 0.8,
+            fontSize: '0.8rem',
+            boxShadow: 'none',
+            minWidth: 'auto',
+            '&:hover': { bgcolor: '#222' },
+          }}
+        >
+          Add
+        </Button>
+      </Box>
+
+      {/* Content Section */}
+      {loading ? (
+        <Paper
+          elevation={0}
+          sx={{
+            p: 5,
+            textAlign: 'center',
+            border: '1px solid',
+            borderColor: 'grey.200',
+            borderRadius: 2,
+          }}
+        >
+          <CircularProgress size={40} color="inherit" />
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Loading your book collection...
+          </Typography>
+        </Paper>
+      ) : (
+        <Paper
+          elevation={0}
+          sx={{
+            border: '1px solid',
+            borderColor: 'grey.200',
+            borderRadius: 2,
+          }}
+        >
+          <BookTable
+            books={books}
+            handleOpen={handleOpen}
+            handleDelete={handleDelete}
+            pagination={pagination}
+          />
+          {books && books.length > 0 && (
+            <Box sx={{ p: 2, pt: 0 }}>
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.totalPages}
+                totalItems={pagination.total}
+                itemsPerPage={pagination.limit}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={handleLimitChange}
+              />
+            </Box>
+          )}
+        </Paper>
+      )}
+
+      {/* Modals */}
+      <BookForm
+        open={open}
+        handleClose={handleClose}
+        handleSave={handleSave}
+        book={currentBook}
+      />
+      <DeleteConfirmationModal
+        show={showDeleteConfirm}
+        handleClose={closeDeleteConfirm}
+        handleConfirm={confirmDelete}
+        book={currentBook}
+      />
+    </Container>
+  );
 };
 
 export default BooksPage;

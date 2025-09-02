@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { Modal, Button, Alert } from 'react-bootstrap';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Alert,
+  Typography,
+  Box,
+  Avatar,
+  CircularProgress,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const DeleteConfirmationModal = ({ show, handleClose, handleConfirm, book }) => {
     const [loading, setLoading] = useState(false);
@@ -22,79 +34,81 @@ const DeleteConfirmationModal = ({ show, handleClose, handleConfirm, book }) => 
     };
 
     return (
-        <Modal 
-            show={show} 
-            onHide={onClose}
-            backdrop={loading ? 'static' : true}
-            keyboard={!loading}
-            centered
+        <Dialog
+            open={show}
+            onClose={onClose}
+            fullWidth
+            maxWidth="sm"
+            disableEscapeKeyDown={loading}
         >
-            <Modal.Header closeButton={!loading} className="border-0 pb-0">
-                <Modal.Title className="d-flex align-items-center gap-2 text-danger">
-                    <span style={{ fontSize: '1.5rem' }}></span>
-                    Delete Book
-                </Modal.Title>
-            </Modal.Header>
-            
-            <Modal.Body className="px-4 py-3">
-                <div className="text-center mb-3">
-                    <div 
-                        className="d-inline-flex align-items-center justify-content-center text-white rounded mb-3"
-                        style={{
-                            width: '60px',
-                            height: '75px',
-                            backgroundColor: '#dc3545',
+            <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'error.main' }}>
+                <DeleteIcon />
+                Delete Book
+            </DialogTitle>
+
+            <DialogContent sx={{ pt: 3 }}>
+                <Box sx={{ textAlign: 'center', mb: 3 }}>
+                    <Avatar
+                        sx={{
+                            width: 60,
+                            height: 75,
+                            bgcolor: 'error.main',
+                            mx: 'auto',
+                            mb: 2,
                             fontSize: '1.8rem',
                             fontWeight: 'bold'
                         }}
                     >
                         {book?.title?.charAt(0)?.toUpperCase() || '?'}
-                    </div>
-                </div>
+                    </Avatar>
+                </Box>
 
-                <div className="text-center">
-                    <h6 className="mb-2">Are you sure you want to delete this book?</h6>
-                    
+                <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="h6" gutterBottom>
+                        Are you sure you want to delete this book?
+                    </Typography>
+
                     {book && (
-                        <div className="bg-light rounded p-3 mb-3">
-                            <div className="fw-semibold text-dark">{book.title}</div>
-                            <div className="text-muted small">by {book.author}</div>
-                        </div>
+                        <Box sx={{ bgcolor: 'grey.100', borderRadius: 2, p: 2, mb: 2 }}>
+                            <Typography variant="body1" fontWeight="bold">
+                                {book.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                by {book.author}
+                            </Typography>
+                        </Box>
                     )}
 
-                    <Alert variant="warning" className="text-start py-2 px-3">
-                        <small>
-                            <strong>Warning:</strong> This action cannot be undone. 
+                    <Alert severity="warning" variant="outlined" sx={{ textAlign: 'left' }}>
+                        <Typography variant="body2">
+                            <strong>Warning:</strong> This action cannot be undone.
                             The book will be permanently removed from your library.
-                        </small>
+                        </Typography>
                     </Alert>
-                </div>
-            </Modal.Body>
-            
-            <Modal.Footer className="border-0 pt-0 px-4 pb-4">
-                <div className="d-flex gap-2 w-100">
-                    <Button 
-                        variant="outline-secondary" 
-                        onClick={onClose}
-                        disabled={loading}
-                        className="flex-fill"
-                    >
-                        Cancel
-                    </Button>
-                    <Button 
-                        variant="danger" 
-                        onClick={onConfirm}
-                        disabled={loading}
-                        className="flex-fill d-flex align-items-center justify-content-center gap-2"
-                    >
-                        {loading && (
-                            <span className="spinner-border spinner-border-sm" role="status" />
-                        )}
-                        {loading ? 'Deleting...' : 'Delete Book'}
-                    </Button>
-                </div>
-            </Modal.Footer>
-        </Modal>
+                </Box>
+            </DialogContent>
+
+            <DialogActions sx={{ p: 3 }}>
+                <Button
+                    variant="outlined"
+                    onClick={onClose}
+                    disabled={loading}
+                    fullWidth
+                >
+                    Cancel
+                </Button>
+                <Button
+                    variant="contained"
+                    color="error"
+                    onClick={onConfirm}
+                    disabled={loading}
+                    fullWidth
+                    startIcon={loading ? <CircularProgress size={16} /> : <DeleteIcon />}
+                >
+                    {loading ? 'Deleting...' : 'Delete Book'}
+                </Button>
+            </DialogActions>
+        </Dialog>
     );
 };
 
